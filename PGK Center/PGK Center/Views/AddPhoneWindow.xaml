@@ -1,0 +1,27 @@
+﻿<Window x:Class="PGK_Center.Views.AddPhoneWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Title="Добавление номера" Height="152" Width="386"        
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        FontFamily="Georgia" FontSize="20" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Label VerticalAlignment="Top" HorizontalAlignment="Left"
+               Content="Номер телефона" Margin="10,10,0,0"/>
+        <TextBox VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                 Margin="10,42,10.2,0"
+                 Text="{Binding Value}"
+                 Grid.ColumnSpan="2"/>
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Content="ОК" Width="150" Margin="0,0,9.8,10"
+                Click="OkButtonClick"/>
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                Content="Отмена" Width="150" Margin="10.2,0,0,10" Grid.Column="1"
+                Click="CancelButtonClick"/>
+    </Grid>
+</Window>
