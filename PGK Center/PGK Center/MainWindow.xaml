@@ -29,8 +29,7 @@
                            FontSize="14"
                            Content="Поиск" Margin="0,4,300.2,0"/>
                     <DataGrid ItemsSource="{Binding GaragesToDisplay}"
-                              SelectedItem="{Binding CurrentGarage, Mode=TwoWay}"                            
-                              ColumnWidth="SizeToCells"
+                              SelectedItem="{Binding CurrentGarage, Mode=TwoWay}" 
                               IsReadOnly="True"
                               AutoGenerateColumns="False"
                               CanUserAddRows="False"
@@ -52,11 +51,37 @@
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="№" Binding="{Binding GarageNumber}" SortDirection="{Binding NumberSortDirection, Mode=TwoWay}"/>
-                            <DataGridTextColumn Header="ФИО" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="ФИО" Binding="{Binding Name}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsDebtor}" Value="True">
+                                                <Setter Property="Background" Value="Red"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsQuarterDebtor}" Value="True">
+                                                <Setter Property="Background" Value="Yellow"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Комментарий" Binding="{Binding Comment}"/>
                             <DataGridTextColumn Header="Адрес" Binding="{Binding Address}"/>
                             <DataGridTextColumn Header="Счётчик" Binding="{Binding CounterStateToDisplay}" MinWidth="100"/>
-                            <DataGridTextColumn Header="Текущая сумма" Binding="{Binding Total}"/>
+                            <DataGridTextColumn Header="Текущая сумма" Binding="{Binding Total}">
+                                <DataGridTextColumn.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsDebtor}" Value="True">
+                                                <Setter Property="Background" Value="Red"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsQuarterDebtor}" Value="True">
+                                                <Setter Property="Background" Value="Yellow"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.CellStyle>
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Площадь, м2" Binding="{Binding Square}"/>
                             <DataGridTextColumn Header="Сотовый" Binding="{Binding CellPhone}"/>
                             <DataGridTextColumn Header="Стационарный" Binding="{Binding StaticPhone}"/>
@@ -73,15 +98,6 @@
                                 <MenuItem Header="История оплаты" Command="{Binding PayCommand}"/>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
-                        <DataGrid.RowStyle>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsDebtor}" Value="True">
-                                        <Setter Property="Background" Value="Red"></Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.RowStyle>
                     </DataGrid>
                 </Grid>
             </TabItem>

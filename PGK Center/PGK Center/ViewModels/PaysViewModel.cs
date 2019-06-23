@@ -56,7 +56,9 @@ namespace PGK_Center.ViewModels
 
         private void Pays_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            OrderedPays = Pays.OrderBy(a => a.Date).ToObservableCollection();
+            OrderedPays = Pays
+                .OrderByDescending(a => a.Date)
+                .ToObservableCollection();
         }
 
         public void ShowView(Window owner)

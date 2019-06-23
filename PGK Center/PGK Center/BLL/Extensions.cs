@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -25,5 +26,8 @@ namespace PGK_Center.BLL
         {
             return text?.ToLower()?.Contains(searchText?.ToLower()) ?? false;
         }
+
+        public static int GetCurrentQuarter(this DateTime date) =>
+            (date.Month - 1) / 3 + 1;
     }
 }

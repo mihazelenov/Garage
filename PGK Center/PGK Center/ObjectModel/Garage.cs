@@ -58,10 +58,28 @@ namespace PGK_Center.ObjectModel
             return this;
         }
 
-        public decimal Total =>
-            CommonData.Tariffs.Sum(a => a.Value * Square) - Pays.Sum(a => a.Value);
+        public decimal Total
+        {
+            get
+            {
+                var sumOnPreviousYears = CommonData.Tariffs
+                    .Where(a => a.Year < DateTime.Now.Year)
+                    .Sum(a => a.Value) * Square;
+                var sumOnCurrentYear =
+                    TotalOnQuarter * DateTime.Now.GetCurrentQuarter();
+                var paysSum = Pays.Sum(a => a.Value);
 
-        public bool IsDebtor => Total > 0;
+                return sumOnPreviousYears + sumOnCurrentYear - paysSum;
+            }
+        }
+
+        private decimal TotalOnQuarter => (CommonData.Tariffs
+            .Find(a => a.Year == DateTime.Now.Year)
+            ?.Value ?? 0) * Square / 4;
+
+        public bool IsDebtor => Total > TotalOnQuarter;
+
+        public bool IsQuarterDebtor => Total > 0 && Total <= TotalOnQuarter;
 
         public bool IsCounterSet
         {
