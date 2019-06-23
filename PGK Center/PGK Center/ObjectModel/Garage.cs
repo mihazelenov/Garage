@@ -62,24 +62,60 @@ namespace PGK_Center.ObjectModel
         {
             get
             {
-                var sumOnPreviousYears = CommonData.Tariffs
-                    .Where(a => a.Year < DateTime.Now.Year)
-                    .Sum(a => a.Value) * Square;
-                var sumOnCurrentYear =
-                    TotalOnQuarter * DateTime.Now.GetCurrentQuarter();
-                var paysSum = Pays.Sum(a => a.Value);
+                var totalOnCurrentYear =
+                    _sumOnQuarter * DateTime.Now.GetCurrentQuarter();
 
-                return sumOnPreviousYears + sumOnCurrentYear - paysSum;
+                return _sumOnPreviousYears + totalOnCurrentYear - _paysSum;
             }
         }
 
-        private decimal TotalOnQuarter => (CommonData.Tariffs
+        public decimal TotalOnCurrentQuarter
+        {
+            get
+            {
+                var total = Math.Min(_sumOnQuarter, Total);
+                return total < 0
+                    ? 0
+                    : total;
+            }
+        }
+
+        public decimal TotalOnCurrentYear
+        {
+            get
+            {
+                var total = Math.Min(
+                    _sumOnQuarter * DateTime.Now.GetCurrentQuarter(), Total);
+                return total < 0
+                    ? 0
+                    : total;
+            }
+        }
+
+        public decimal TotalOnPreviousYears
+        {
+            get
+            {
+                var total = _sumOnPreviousYears - _paysSum;
+                return total < 0
+                    ? 0
+                    : total;
+            }
+        }
+
+        private decimal _paysSum => Pays.Sum(a => a.Value);
+
+        private decimal _sumOnPreviousYears => CommonData.Tariffs
+            .Where(a => a.Year < DateTime.Now.Year)
+            .Sum(a => a.Value) * Square;
+
+        private decimal _sumOnQuarter => (CommonData.Tariffs
             .Find(a => a.Year == DateTime.Now.Year)
             ?.Value ?? 0) * Square / 4;
 
-        public bool IsDebtor => Total > TotalOnQuarter;
+        public bool IsDebtor => Total > _sumOnQuarter;
 
-        public bool IsQuarterDebtor => Total > 0 && Total <= TotalOnQuarter;
+        public bool IsQuarterDebtor => Total > 0 && Total <= _sumOnQuarter;
 
         public bool IsCounterSet
         {

@@ -4,6 +4,7 @@ using PGK_Center.Commands;
 using PGK_Center.DAL;
 using PGK_Center.ObjectModel;
 using PropertyChanged;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -58,6 +59,10 @@ namespace PGK_Center.ViewModels
         private RelayCommand _reportCommand;
         public RelayCommand ReportCommand => _reportCommand ??
             (_reportCommand = new RelayCommand(o => Report()));
+
+        private RelayCommand _statisticCommand;
+        public RelayCommand StatisticCommand => _statisticCommand ??
+            (_statisticCommand = new RelayCommand(o => Statistic()));
 
         private RelayCommand _addTariffCommand;
         public RelayCommand AddTariffCommand => _addTariffCommand ??
@@ -168,15 +173,43 @@ namespace PGK_Center.ViewModels
         {
             var dialog = new SaveFileDialog
             {
+                FileName = $"Отчёт от {DateTime.Now.ToString("dd.MM.yyyy")}",
+                Filter = ".csv files|*.csv"
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                var csv = new StringBuilder("Номер\tФИО\tСчётчик\tМобильный\tСумма");
+                csv.AppendLine();
+                foreach (var garage in Garages.OrderBy(a => a.GarageNumber))
+                    csv.AppendLine($"{garage.Number}\t{garage.Name}\t{garage.CounterStateToDisplay}\t{garage.CellPhone}\t{garage.Total}");
+
+                File.WriteAllText(dialog.FileName, csv.ToString(), Encoding.UTF8);
+            }
+        }
+
+        private void Statistic()
+        {
+            var dialog = new SaveFileDialog
+            {
+                FileName = $"Статистика от {DateTime.Now.ToString("dd.MM.yyyy")}",
                 Filter = ".csv files|*.csv"
             };
             if (dialog.ShowDialog() == true)
             {
                 var csv = new StringBuilder();
-                foreach (var garage in Garages.OrderBy(a => a.GarageNumber))
-                    csv.AppendLine($"{garage.Number}\t{garage.Name}\t{garage.CellPhone}\t{garage.Total}");
+                csv.AppendLine($"Всего гаражей:\t{Garages.Count}");
+                csv.AppendLine($"Общая площадь:\t{Garages.Sum(a => a.Square)}");
+                csv.AppendLine();
+                csv.AppendLine($"Счётчиков установлено:\t{Garages.Count(a => a.IsCounterSet)}");
+                csv.AppendLine($"Счётчиков не установлено:\t{Garages.Count(a => a.IsCounterNotSet)}");
+                csv.AppendLine($"Нет информации о счётчике:\t{Garages.Count(a => !a.IsCounterSet && !a.IsCounterNotSet)}");
+                csv.AppendLine();
+                csv.AppendLine($"Общая задолженность:\t{Garages.Where(a => a.Total > 0).Sum(a => a.Total)}");
+                //csv.AppendLine($"Задолженность за текущий квартал:\t{Garages.Sum(a => a.TotalOnCurrentQuarter)}");
+                csv.AppendLine($"Задолженность за текущий год:\t{Garages.Sum(a => a.TotalOnCurrentYear)}");
+                csv.AppendLine($"Задолженность за предыдущие периоды:\t{Garages.Sum(a => a.TotalOnPreviousYears)}");
 
-                File.WriteAllText(dialog.SafeFileName, csv.ToString(), Encoding.UTF8);
+                File.WriteAllText(dialog.FileName, csv.ToString(), Encoding.UTF8);
             }
         }
         #endregion
@@ -197,7 +230,7 @@ namespace PGK_Center.ViewModels
                 CommonData.Tariffs.Remove(tariff);
 
             CommonData.Tariffs.Add(obj);
-            
+
             ShowTariffs();
             ShowGarages();
         }

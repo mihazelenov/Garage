@@ -1,6 +1,5 @@
 ﻿using PGK_Center.ViewModels;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 

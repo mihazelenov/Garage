@@ -17,8 +17,8 @@
             <TabItem Header="Гаражи">
                 <Grid>
                     <Button VerticalAlignment="Top" HorizontalAlignment="Left"
-                            Height="30" Width="250"
-                            Content="Выгрузить отчёт"
+                            Height="30" Width="200"
+                            Content="Отчёт"
                             Command="{Binding ReportCommand}"/>
                     <TextBox VerticalAlignment="Top" HorizontalAlignment="Right"
                              VerticalContentAlignment="Center"
@@ -99,6 +99,10 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
+                    <Button VerticalAlignment="Top" HorizontalAlignment="Left"
+                            Height="30" Width="200"
+                            Content="Статистика"
+                            Command="{Binding StatisticCommand}" Margin="205,0,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Тарифы">
