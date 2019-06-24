@@ -79,6 +79,7 @@
     <Compile Include="DAL\DBManager.cs" />
     <Compile Include="BLL\Extensions.cs" />
     <Compile Include="ObjectModel\Phone.cs" />
+    <Compile Include="ObjectModel\ReportType.cs" />
     <Compile Include="ObjectModel\Tariff.cs" />
     <Compile Include="ObjectModel\Pay.cs" />
     <Compile Include="ViewModels\TariffViewModel.cs" />

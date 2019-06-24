@@ -135,6 +135,8 @@ namespace PGK_Center.ObjectModel
             }
         }
 
+        public bool IsCounterNoInfo => CounterState == null;        
+
         public string CounterStateToDisplay
         {
             get

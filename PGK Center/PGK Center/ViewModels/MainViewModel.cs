@@ -5,6 +5,7 @@ using PGK_Center.DAL;
 using PGK_Center.ObjectModel;
 using PropertyChanged;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -40,6 +41,28 @@ namespace PGK_Center.ViewModels
 
         public ListSortDirection NumberSortDirection { get; set; }
 
+        public int GaragesCount { get; set; }
+        public decimal GaragesSquare { get; set; }
+        public int CountersSet { get; set; }
+        public int CountersNotSet { get; set; }
+        public int CountersNoInfo { get; set; }
+        public decimal Total { get; set; }
+        public decimal TotalOnCurrentYear { get; set; }
+        public decimal TotalOnPreviousYears { get; set; }
+
+        public ReportType[] ReportTypes => new ReportType[]
+        {
+            new ReportType("Все", ReportCategory.All),
+            new ReportType("С долгом за квартал",
+                ReportCategory.QuarterDebtors),
+            new ReportType("С долгом более чем за квартал",
+                ReportCategory.PreviousYearsDebtors)
+        };
+
+        public ReportType CurrentReportType { get; set; }
+
+
+        #region Commands
         private RelayCommand _addCommand;
         public RelayCommand AddCommand => _addCommand ??
             (_addCommand = new RelayCommand(o => AddGarage()));
@@ -75,6 +98,7 @@ namespace PGK_Center.ViewModels
         private RelayCommand _deleteTariffCommand;
         public RelayCommand DeleteTariffCommand => _deleteTariffCommand ??
             (_deleteTariffCommand = new RelayCommand(o => DeleteTariff()));
+        #endregion
 
         public MainViewModel(MainWindow view)
         {
@@ -86,11 +110,25 @@ namespace PGK_Center.ViewModels
             GaragesToDisplay = Garages.ToObservableCollection();
             Garages.CollectionChanged += Garages_CollectionChanged;
             ShowTariffs();
+            CountStatistic();
         }
 
         private void Garages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshGaragesToDisplay();
+            CountStatistic();
+        }
+
+        private void CountStatistic()
+        {
+            GaragesCount = Garages.Count;
+            GaragesSquare = Garages.Sum(a => a.Square);
+            CountersSet = Garages.Count(a => a.IsCounterSet);
+            CountersNotSet = Garages.Count(a => a.IsCounterNotSet);
+            CountersNoInfo = Garages.Count(a => a.IsCounterNoInfo);
+            Total = Garages.Where(a => a.Total > 0).Sum(a => a.Total);
+            TotalOnCurrentYear = Garages.Sum(a => a.TotalOnCurrentYear);
+            TotalOnPreviousYears = Garages.Sum(a => a.TotalOnPreviousYears);
         }
 
         private void RefreshGaragesToDisplay()
@@ -171,16 +209,37 @@ namespace PGK_Center.ViewModels
 
         private void Report()
         {
+            if (CurrentReportType == null)
+            {
+                MessageBox.Show($"Выберите тип отчёта", string.Empty,
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+
             var dialog = new SaveFileDialog
             {
-                FileName = $"Отчёт от {DateTime.Now.ToString("dd.MM.yyyy")}",
+                FileName = $"Отчёт '{CurrentReportType.Name}' от {DateTime.Now.ToString("dd.MM.yyyy")}",
                 Filter = ".csv files|*.csv"
             };
-            if (dialog.ShowDialog() == true)
+            if (dialog.ShowDialog(_view) == true)
             {
+                IEnumerable<Garage> garagesToReport;
+                switch (CurrentReportType.Category)
+                {
+                    case ReportCategory.PreviousYearsDebtors:
+                        garagesToReport = Garages.Where(a => a.IsDebtor);
+                        break;
+                    case ReportCategory.QuarterDebtors:
+                        garagesToReport = Garages.Where(a => a.IsQuarterDebtor);
+                        break;
+                    default:
+                        garagesToReport = Garages;
+                        break;
+                }
+
                 var csv = new StringBuilder("Номер\tФИО\tСчётчик\tМобильный\tСумма");
                 csv.AppendLine();
-                foreach (var garage in Garages.OrderBy(a => a.GarageNumber))
+                foreach (var garage in garagesToReport.OrderBy(a => a.GarageNumber))
                     csv.AppendLine($"{garage.Number}\t{garage.Name}\t{garage.CounterStateToDisplay}\t{garage.CellPhone}\t{garage.Total}");
 
                 File.WriteAllText(dialog.FileName, csv.ToString(), Encoding.UTF8);
@@ -194,20 +253,20 @@ namespace PGK_Center.ViewModels
                 FileName = $"Статистика от {DateTime.Now.ToString("dd.MM.yyyy")}",
                 Filter = ".csv files|*.csv"
             };
-            if (dialog.ShowDialog() == true)
+            if (dialog.ShowDialog(_view) == true)
             {
                 var csv = new StringBuilder();
-                csv.AppendLine($"Всего гаражей:\t{Garages.Count}");
-                csv.AppendLine($"Общая площадь:\t{Garages.Sum(a => a.Square)}");
+                csv.AppendLine($"Всего гаражей:\t{GaragesCount}");
+                csv.AppendLine($"Общая площадь:\t{GaragesSquare}");
                 csv.AppendLine();
-                csv.AppendLine($"Счётчиков установлено:\t{Garages.Count(a => a.IsCounterSet)}");
-                csv.AppendLine($"Счётчиков не установлено:\t{Garages.Count(a => a.IsCounterNotSet)}");
-                csv.AppendLine($"Нет информации о счётчике:\t{Garages.Count(a => !a.IsCounterSet && !a.IsCounterNotSet)}");
+                csv.AppendLine($"Счётчиков установлено:\t{CountersSet}");
+                csv.AppendLine($"Счётчиков не установлено:\t{CountersNotSet}");
+                csv.AppendLine($"Нет информации о счётчике:\t{CountersNoInfo}");
                 csv.AppendLine();
-                csv.AppendLine($"Общая задолженность:\t{Garages.Where(a => a.Total > 0).Sum(a => a.Total)}");
+                csv.AppendLine($"Общая задолженность:\t{Total}");
                 //csv.AppendLine($"Задолженность за текущий квартал:\t{Garages.Sum(a => a.TotalOnCurrentQuarter)}");
-                csv.AppendLine($"Задолженность за текущий год:\t{Garages.Sum(a => a.TotalOnCurrentYear)}");
-                csv.AppendLine($"Задолженность за предыдущие периоды:\t{Garages.Sum(a => a.TotalOnPreviousYears)}");
+                csv.AppendLine($"Задолженность за текущий год:\t{TotalOnCurrentYear}");
+                csv.AppendLine($"Задолженность за предыдущие периоды:\t{TotalOnPreviousYears}");
 
                 File.WriteAllText(dialog.FileName, csv.ToString(), Encoding.UTF8);
             }

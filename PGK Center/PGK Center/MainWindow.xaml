@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" WindowState="Maximized"
-        Title="ПГК Центр" Height="300" Width="800"
+        Title="ПГК Центр" Height="484.8" Width="800"
         FontFamily="Georgia" FontSize="20">
     <Window.InputBindings>
         <KeyBinding Modifiers="Control"
@@ -16,10 +16,6 @@
         <TabControl Margin="10">
             <TabItem Header="Гаражи">
                 <Grid>
-                    <Button VerticalAlignment="Top" HorizontalAlignment="Left"
-                            Height="30" Width="200"
-                            Content="Отчёт"
-                            Command="{Binding ReportCommand}"/>
                     <TextBox VerticalAlignment="Top" HorizontalAlignment="Right"
                              VerticalContentAlignment="Center"
                              Width="300"
@@ -99,10 +95,6 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
-                    <Button VerticalAlignment="Top" HorizontalAlignment="Left"
-                            Height="30" Width="200"
-                            Content="Статистика"
-                            Command="{Binding StatisticCommand}" Margin="205,0,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Тарифы">
@@ -131,6 +123,122 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Отчётность">
+                <Grid>
+                    <GroupBox VerticalAlignment="Top"
+                              HorizontalAlignment="Left">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Статистика"/>
+                                <Button Content="Выгрузить" Width="120"
+                                        Command="{Binding StatisticCommand}"/>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Всего гаражей:"
+                                   Grid.Row="0" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Общая площадь:"
+                                   Grid.Row="1" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Счётчиков установлено:"
+                                   Grid.Row="2" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Счётчиков не установлено:"
+                                   Grid.Row="3" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Нет информации о счётчике:"
+                                   Grid.Row="4" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Общая задолженность:"
+                                   Grid.Row="5" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Задолженность за текущий год:"
+                                   Grid.Row="6" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Content="Задолженность за предыдущие периоды:"
+                                   Grid.Row="7" Grid.Column="0"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding GaragesCount}"
+                                   Grid.Row="0" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding GaragesSquare}"
+                                   Grid.Row="1" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding CountersSet}"
+                                   Grid.Row="2" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding CountersNotSet}"
+                                   Grid.Row="3" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding CountersNoInfo}"
+                                   Grid.Row="4" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding Total}"
+                                   Grid.Row="5" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding TotalOnCurrentYear}"
+                                   Grid.Row="6" Grid.Column="1"/>
+                            <Label HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Content="{Binding TotalOnPreviousYears}"
+                                   Grid.Row="7" Grid.Column="1"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Header="Отчёт" Margin="0,309,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox VerticalAlignment="Center"
+                                      HorizontalAlignment="Left"
+                                      Width="400" Margin="0,0,10,0"
+                                      ItemsSource="{Binding ReportTypes}"
+                                      SelectedItem="{Binding CurrentReportType}"
+                                      DisplayMemberPath="Name"/>
+                            <Button Content="Выгрузить" Width="120"
+                                    Command="{Binding ReportCommand}"/>
+                        </StackPanel>
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>
