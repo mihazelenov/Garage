@@ -19,6 +19,9 @@ namespace PGK_Center.ObjectModel
         public decimal Value { get; set; }
 
         [Column]
+        public bool IsByAgreement { get; set; }
+
+        [Column]
         public bool IsDeleted { get; set; }
     }
 }

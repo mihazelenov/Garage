@@ -50,31 +50,18 @@
                             <DataGridTextColumn Header="ФИО" Binding="{Binding Name}">
                                 <DataGridTextColumn.CellStyle>
                                     <Style TargetType="DataGridCell">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsDebtor}" Value="True">
-                                                <Setter Property="Background" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsQuarterDebtor}" Value="True">
-                                                <Setter Property="Background" Value="Yellow"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                        <Setter Property="Background" Value="{Binding Background}"/>
                                     </Style>
                                 </DataGridTextColumn.CellStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Комментарий" Binding="{Binding Comment}"/>
                             <DataGridTextColumn Header="Адрес" Binding="{Binding Address}"/>
-                            <DataGridTextColumn Header="Счётчик" Binding="{Binding CounterStateToDisplay}" MinWidth="100"/>
+                            <DataGridTextColumn Header="Счётчик" Binding="{Binding CounterStateToDisplay}"/>
+                            <DataGridTextColumn Header="Начислено" Binding="{Binding ToPay}"/>
                             <DataGridTextColumn Header="Текущая сумма" Binding="{Binding Total}">
                                 <DataGridTextColumn.CellStyle>
                                     <Style TargetType="DataGridCell">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsDebtor}" Value="True">
-                                                <Setter Property="Background" Value="Red"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsQuarterDebtor}" Value="True">
-                                                <Setter Property="Background" Value="Yellow"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                        <Setter Property="Background" Value="{Binding Background}"/>
                                     </Style>
                                 </DataGridTextColumn.CellStyle>
                             </DataGridTextColumn>

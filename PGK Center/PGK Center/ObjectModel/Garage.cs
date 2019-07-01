@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 namespace PGK_Center.ObjectModel
 {
@@ -109,13 +110,32 @@ namespace PGK_Center.ObjectModel
             .Where(a => a.Year < DateTime.Now.Year)
             .Sum(a => a.Value) * Square;
 
-        private decimal _sumOnQuarter => (CommonData.Tariffs
+        private decimal _sumOnYear => (CommonData.Tariffs
             .Find(a => a.Year == DateTime.Now.Year)
-            ?.Value ?? 0) * Square / 4;
+            ?.Value ?? 0) * Square;
+        
+        private decimal _sumOnQuarter => _sumOnYear / 4;
 
-        public bool IsDebtor => Total > _sumOnQuarter;
+        public string ToPay =>
+            $"{_sumOnYear}/{_sumOnQuarter * DateTime.Now.GetCurrentQuarter()}";
 
-        public bool IsQuarterDebtor => Total > 0 && Total <= _sumOnQuarter;
+        private bool _isQuarterDebtor => Total > 0 && Total <= _sumOnQuarter;
+        public bool IsCurrentYearDebtor => Total > _sumOnQuarter && Total <= TotalOnCurrentYear;
+        public bool IsPreviousYearsDebtor => Total > TotalOnCurrentYear;
+
+        public Brush Background
+        {
+            get
+            {
+                if (IsPreviousYearsDebtor || IsCurrentYearDebtor)
+                    return Brushes.IndianRed;
+
+                if (_isQuarterDebtor)
+                    return Brushes.Yellow;
+
+                return Brushes.Transparent;
+            }
+        }
 
         public bool IsCounterSet
         {

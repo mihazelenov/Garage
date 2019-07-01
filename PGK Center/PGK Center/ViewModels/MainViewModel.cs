@@ -53,9 +53,9 @@ namespace PGK_Center.ViewModels
         public ReportType[] ReportTypes => new ReportType[]
         {
             new ReportType("Все", ReportCategory.All),
-            new ReportType("С долгом за квартал",
-                ReportCategory.QuarterDebtors),
-            new ReportType("С долгом более чем за квартал",
+            new ReportType("С долгом за текущий год",
+                ReportCategory.CurrentYearDebtors),
+            new ReportType("С долгом за предыдущие годы",
                 ReportCategory.PreviousYearsDebtors)
         };
 
@@ -227,10 +227,10 @@ namespace PGK_Center.ViewModels
                 switch (CurrentReportType.Category)
                 {
                     case ReportCategory.PreviousYearsDebtors:
-                        garagesToReport = Garages.Where(a => a.IsDebtor);
+                        garagesToReport = Garages.Where(a => a.IsPreviousYearsDebtor);
                         break;
-                    case ReportCategory.QuarterDebtors:
-                        garagesToReport = Garages.Where(a => a.IsQuarterDebtor);
+                    case ReportCategory.CurrentYearDebtors:
+                        garagesToReport = Garages.Where(a => a.IsCurrentYearDebtor);
                         break;
                     default:
                         garagesToReport = Garages;

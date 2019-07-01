@@ -20,6 +20,15 @@
                   CanUserDeleteRows="False"
                   CanUserResizeRows="False"
                   SelectionMode="Single">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsByAgreement}" Value="True">
+                            <Setter Property="Background" Value="LightBlue"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата" Binding="{Binding Date, StringFormat=\{0:dd.MM.yyyy\}}"
                                     Width="*"/>
