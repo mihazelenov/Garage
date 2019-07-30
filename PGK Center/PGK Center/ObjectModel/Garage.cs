@@ -1,6 +1,7 @@
 ﻿using PGK_Center.BLL;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -29,7 +30,11 @@ namespace PGK_Center.ObjectModel
 
         public List<Phone> Phones { get; set; } = new List<Phone>();
 
-        public List<Pay> Pays { get; set; } = new List<Pay>();
+        public List<GaragePay> GaragePays { get; set; } = new List<GaragePay>();
+
+        public List<ElectricityPay> ElectricityPays { get; set; } = new List<ElectricityPay>();
+
+        public List<Meter> Meters { get; set; } = new List<Meter>();
 
         public List<Phone> CellPhones => Phones.FindAll(a => a.IsMobile);
         public List<Phone> StaticPhones => Phones.FindAll(a => !a.IsMobile);
@@ -37,9 +42,21 @@ namespace PGK_Center.ObjectModel
         public string CellPhone => CellPhones.FirstOrDefault()?.Value;
         public string StaticPhone => StaticPhones.FirstOrDefault()?.Value;
 
-        public Garage WithPays(IEnumerable<Pay> pays)
+        public Garage WithGaragePays(IEnumerable<GaragePay> pays)
         {
-            Pays = pays.ToList();
+            GaragePays = pays.ToList();
+            return this;
+        }
+
+        public Garage WithElectricityPays(IEnumerable<ElectricityPay> pays)
+        {
+            ElectricityPays = pays.ToList();
+            return this;
+        }
+
+        public Garage WithMeters(IEnumerable<Meter> meters)
+        {
+            Meters = meters.ToList();
             return this;
         }
 
@@ -94,7 +111,9 @@ namespace PGK_Center.ObjectModel
             }
         }
 
-        private decimal _paysSum => Pays.Sum(a => a.Value);
+        private decimal _paysSum => GaragePays.Sum(a => a.Value);
+
+        private decimal _electricityPaysSum => ElectricityPays.Sum(a => a.Value);
 
         private decimal _sumOnPreviousYears => CommonData.Tariffs
             .Where(a => a.Year < DateTime.Now.Year)
@@ -103,7 +122,7 @@ namespace PGK_Center.ObjectModel
         private decimal _sumOnYear => (CommonData.Tariffs
             .Find(a => a.Year == DateTime.Now.Year)
             ?.Value ?? 0) * Square;
-        
+
         private decimal _sumOnQuarter => _sumOnYear / 4;
 
         public string ToPay =>
@@ -127,6 +146,7 @@ namespace PGK_Center.ObjectModel
             }
         }
 
+        [NotMapped]
         public bool IsCounterSet
         {
             get => CounterState == true;
@@ -136,6 +156,7 @@ namespace PGK_Center.ObjectModel
             }
         }
 
+        [NotMapped]
         public bool IsCounterNotSet
         {
             get => CounterState == false;
@@ -145,7 +166,7 @@ namespace PGK_Center.ObjectModel
             }
         }
 
-        public bool IsCounterNoInfo => CounterState == null;        
+        public bool IsCounterNoInfo => CounterState == null;
 
         public string CounterStateToDisplay
         {

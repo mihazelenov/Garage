@@ -231,7 +231,7 @@ namespace PGK_Center.ViewModels
             if (CurrentGarage == null)
                 return;
 
-            var viewModel = new PaysViewModel(CurrentGarage);
+            var viewModel = new ElectricityPaysViewModel(CurrentGarage);
             viewModel.GarageSaved += ViewModel_GarageSaved;
             viewModel.ShowView(_view);
         }

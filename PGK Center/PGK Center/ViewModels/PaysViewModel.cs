@@ -19,8 +19,8 @@ namespace PGK_Center.ViewModels
 
         private Garage _garage { get; }
 
-        private ObservableCollection<Pay> Pays { get; }
-        public ObservableCollection<Pay> OrderedPays { get; set; }
+        private ObservableCollection<GaragePay> Pays { get; }
+        public ObservableCollection<GaragePay> OrderedPays { get; set; }
 
         public string Title { get; }
 
@@ -42,14 +42,14 @@ namespace PGK_Center.ViewModels
         public RelayCommand CancelCommand => _cancelCommand ??
             (_cancelCommand = new RelayCommand(o => _view.DialogResult = false));
 
-        public Pay CurrentPay { get; set; }
+        public GaragePay CurrentPay { get; set; }
 
         public PaysViewModel(Garage garage)
         {
             _garage = garage;
             Title = $"Гараж №{garage.Number}. История оплаты";
 
-            Pays = garage.Pays.ToObservableCollection();
+            Pays = garage.GaragePays.ToObservableCollection();
             Pays.CollectionChanged += Pays_CollectionChanged;
             Pays_CollectionChanged(this, null);
         }
@@ -73,7 +73,7 @@ namespace PGK_Center.ViewModels
 
         private void Add()
         {
-            var pay = new Pay();
+            var pay = new GaragePay();
             var view = new AddPayWindow
             {
                 DataContext = pay,
@@ -97,7 +97,7 @@ namespace PGK_Center.ViewModels
                 pay.GarageID = _garage.Id;
 
             DBManager.SaveGaragePays(_garage.Id, Pays);
-            _garage.Pays = Pays.ToList();
+            _garage.GaragePays = Pays.ToList();
 
             GarageSaved?.Invoke(_garage);
             _view.DialogResult = true;

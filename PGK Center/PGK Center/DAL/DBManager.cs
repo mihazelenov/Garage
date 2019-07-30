@@ -17,23 +17,42 @@ namespace PGK_Center.DAL
                     .Where(a => !a.IsDeleted)
                     .ToArray();
 
-                var withPays = garages
-                    .GroupJoin(dc.Pays
+                var withGaragePays = garages
+                    .GroupJoin(dc.GaragePays
                         .AsNoTracking()
                         .Where(a => !a.IsDeleted),
                                g => g.Id,
                                p => p.GarageID,
-                               (g, p) => g.WithPays(p));
+                               (g, p) => g.WithGaragePays(p));
 
-                return withPays
+                var withElectricityPays = withGaragePays
+                    .GroupJoin(dc.ElectricityPays
+                        .AsNoTracking()
+                        .Where(a => !a.IsDeleted)
+                        .OrderBy(a => a.Id),
+                                 g => g.Id,
+                                 p => p.GarageID,
+                                 (g, p) => g.WithElectricityPays(p));
+
+                var withMeters = withElectricityPays
+                    .GroupJoin(dc.Meters
+                        .AsNoTracking()
+                        .Where(a => !a.IsDeleted)
+                        .OrderBy(a => a.Id),
+                                 g => g.Id,
+                                 p => p.GarageID,
+                                 (g, p) => g.WithMeters(p));
+
+                var withPhones = withMeters
                     .GroupJoin(dc.Phones
                         .AsNoTracking()
                         .Where(a => !a.IsDeleted)
                         .OrderBy(a => a.Id),
-                               g => g.Id,
-                               p => p.GarageID,
-                               (g, p) => g.WithPhones(p))
-                    .ToArray();
+                                 g => g.Id,
+                                 p => p.GarageID,
+                                 (g, p) => g.WithPhones(p));
+
+                return withPhones.ToArray();
             }
         }
 
@@ -44,8 +63,12 @@ namespace PGK_Center.DAL
 
             using (var dc = new DatabaseContext())
             {
-                for (int n = 0; n < garage.Pays.Count; n++)
-                    dc.Entry(garage.Pays[n]).State = EntityState.Unchanged;
+                for (int n = 0; n < garage.GaragePays.Count; n++)
+                    dc.Entry(garage.GaragePays[n]).State = EntityState.Unchanged;
+                for (int n = 0; n < garage.ElectricityPays.Count; n++)
+                    dc.Entry(garage.ElectricityPays[n]).State = EntityState.Unchanged;
+                for (int n = 0; n < garage.Meters.Count; n++)
+                    dc.Entry(garage.Meters[n]).State = EntityState.Unchanged;
                 for (int n = 0; n < garage.Phones.Count; n++)
                     dc.Entry(garage.Phones[n]).State = EntityState.Unchanged;
 
@@ -72,14 +95,38 @@ namespace PGK_Center.DAL
             }
         }
 
-        public static void SaveGaragePays(int garageID, IEnumerable<Pay> pays)
+        public static void SaveGaragePays(int garageID, IEnumerable<GaragePay> pays)
         {
             using (var dc = new DatabaseContext())
             {
-                foreach (var pay in dc.Pays.Where(a => a.GarageID == garageID))
+                foreach (var pay in dc.GaragePays.Where(a => a.GarageID == garageID))
                     pay.IsDeleted = true;
 
-                dc.Pays.AddRange(pays);
+                dc.GaragePays.AddRange(pays);
+                dc.SaveChanges();
+            }
+        }
+
+        public static void SaveElectricityPays(int garageID, IEnumerable<ElectricityPay> pays)
+        {
+            using (var dc = new DatabaseContext())
+            {
+                foreach (var pay in dc.GaragePays.Where(a => a.GarageID == garageID))
+                    pay.IsDeleted = true;
+
+                dc.ElectricityPays.AddRange(pays);
+                dc.SaveChanges();
+            }
+        }
+
+        public static void SaveMeters(int garageID, IEnumerable<Meter> meters)
+        {
+            using (var dc = new DatabaseContext())
+            {
+                foreach (var meter in dc.Meters.Where(a => a.GarageID == garageID))
+                    meter.IsDeleted = true;
+
+                dc.Meters.AddRange(meters);
                 dc.SaveChanges();
             }
         }

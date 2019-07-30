@@ -78,18 +78,25 @@
     <Compile Include="DAL\DatabaseContext.cs" />
     <Compile Include="DAL\DBManager.cs" />
     <Compile Include="BLL\Extensions.cs" />
+    <Compile Include="ObjectModel\ElectricityPay.cs" />
+    <Compile Include="ObjectModel\Meter.cs" />
+    <Compile Include="ObjectModel\Pay.cs" />
     <Compile Include="ObjectModel\Phone.cs" />
     <Compile Include="ObjectModel\ReportType.cs" />
     <Compile Include="ObjectModel\ElectricityTariff.cs" />
     <Compile Include="ObjectModel\Tariff.cs" />
-    <Compile Include="ObjectModel\Pay.cs" />
+    <Compile Include="ObjectModel\GaragePay.cs" />
     <Compile Include="ViewModels\ElectricityTariffViewModel.cs" />
+    <Compile Include="ViewModels\ElectricityPaysViewModel.cs" />
     <Compile Include="ViewModels\TariffViewModel.cs" />
     <Compile Include="ViewModels\PaysViewModel.cs" />
     <Compile Include="ViewModels\GarageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\ElectricityTariffWindow.xaml.cs">
       <DependentUpon>ElectricityTariffWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ElectricityPaysWindow.xaml.cs">
+      <DependentUpon>ElectricityPaysWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TariffWindow.xaml.cs">
       <DependentUpon>TariffWindow.xaml</DependentUpon>
@@ -119,6 +126,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\ElectricityTariffWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ElectricityPaysWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

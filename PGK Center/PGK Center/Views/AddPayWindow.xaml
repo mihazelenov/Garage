@@ -28,6 +28,7 @@
         <CheckBox VerticalAlignment="Top" HorizontalAlignment="Left"
                   Content="По договорённости" Grid.ColumnSpan="2"
                   IsChecked="{Binding IsByAgreement}"
+                  Visibility="{Binding IsByAgreementVisibility}"
                   Margin="10,77,0,0"/>
         <Button VerticalAlignment="Bottom" HorizontalAlignment="Right"
                 Content="ОК" Width="150" Margin="0,0,9.8,10"

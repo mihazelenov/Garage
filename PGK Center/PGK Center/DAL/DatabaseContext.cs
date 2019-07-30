@@ -10,7 +10,11 @@ namespace PGK_Center.DAL
 
         public DbSet<Garage> Garages { get; set; }
 
-        public DbSet<Pay> Pays { get; set; }
+        public DbSet<GaragePay> GaragePays { get; set; }
+
+        public DbSet<ElectricityPay> ElectricityPays { get; set; }
+
+        public DbSet<Meter> Meters { get; set; }
 
         public DbSet<Phone> Phones { get; set; }
 
