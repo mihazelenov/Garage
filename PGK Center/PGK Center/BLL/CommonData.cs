@@ -12,5 +12,8 @@ namespace PGK_Center.BLL
         public static readonly Regex IntegerRegex = new Regex(@"d+");
 
         public static List<Tariff> Tariffs { get; } = DBManager.GetAllTariffs();
+
+        public static List<ElectricityTariff> ElectricityTariffs { get; }
+            = DBManager.GetAllElectricityTariffs();
     }
 }

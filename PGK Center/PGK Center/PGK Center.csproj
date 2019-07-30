@@ -80,12 +80,17 @@
     <Compile Include="BLL\Extensions.cs" />
     <Compile Include="ObjectModel\Phone.cs" />
     <Compile Include="ObjectModel\ReportType.cs" />
+    <Compile Include="ObjectModel\ElectricityTariff.cs" />
     <Compile Include="ObjectModel\Tariff.cs" />
     <Compile Include="ObjectModel\Pay.cs" />
+    <Compile Include="ViewModels\ElectricityTariffViewModel.cs" />
     <Compile Include="ViewModels\TariffViewModel.cs" />
     <Compile Include="ViewModels\PaysViewModel.cs" />
     <Compile Include="ViewModels\GarageViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\ElectricityTariffWindow.xaml.cs">
+      <DependentUpon>ElectricityTariffWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TariffWindow.xaml.cs">
       <DependentUpon>TariffWindow.xaml</DependentUpon>
     </Compile>
@@ -113,6 +118,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\ElectricityTariffWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\TariffWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

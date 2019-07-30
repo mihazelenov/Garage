@@ -94,9 +94,9 @@ namespace PGK_Center.ViewModels
         private void Save()
         {
             foreach (var pay in Pays)
-                pay.GarageID = _garage.ID;
+                pay.GarageID = _garage.Id;
 
-            DBManager.SaveGaragePays(_garage.ID, Pays);
+            DBManager.SaveGaragePays(_garage.Id, Pays);
             _garage.Pays = Pays.ToList();
 
             GarageSaved?.Invoke(_garage);

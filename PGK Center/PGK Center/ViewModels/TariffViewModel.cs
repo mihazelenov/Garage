@@ -50,7 +50,7 @@ namespace PGK_Center.ViewModels
                 return;
             }
 
-            if (CommonData.Tariffs.Any(a => a.Year == Tariff.Year && a.ID != Tariff.ID))
+            if (CommonData.Tariffs.Any(a => a.Year == Tariff.Year && a.Id != Tariff.Id))
             {
                 MessageBox.Show($"Тариф {Tariff.Year} года уже существует");
                 return;

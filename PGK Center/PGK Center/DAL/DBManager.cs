@@ -21,7 +21,7 @@ namespace PGK_Center.DAL
                     .GroupJoin(dc.Pays
                         .AsNoTracking()
                         .Where(a => !a.IsDeleted),
-                               g => g.ID,
+                               g => g.Id,
                                p => p.GarageID,
                                (g, p) => g.WithPays(p));
 
@@ -29,8 +29,8 @@ namespace PGK_Center.DAL
                     .GroupJoin(dc.Phones
                         .AsNoTracking()
                         .Where(a => !a.IsDeleted)
-                        .OrderBy(a => a.ID),
-                               g => g.ID,
+                        .OrderBy(a => a.Id),
+                               g => g.Id,
                                p => p.GarageID,
                                (g, p) => g.WithPhones(p))
                     .ToArray();
@@ -49,7 +49,7 @@ namespace PGK_Center.DAL
                 for (int n = 0; n < garage.Phones.Count; n++)
                     dc.Entry(garage.Phones[n]).State = EntityState.Unchanged;
 
-                var oldGarage = dc.Garages.FirstOrDefault(a => a.ID == garage.ID);
+                var oldGarage = dc.Garages.FirstOrDefault(a => a.Id == garage.Id);
 
                 if (oldGarage == null)
                     dc.Garages.Add(garage);
@@ -88,7 +88,7 @@ namespace PGK_Center.DAL
         {
             using (var dc = new DatabaseContext())
             {
-                var oldGarage = dc.Garages.FirstOrDefault(a => a.ID == id);
+                var oldGarage = dc.Garages.FirstOrDefault(a => a.Id == id);
                 if (oldGarage != null)
                     oldGarage.IsDeleted = true;
 
@@ -100,7 +100,19 @@ namespace PGK_Center.DAL
         {
             using (var dc = new DatabaseContext())
             {
-                var oldTariff = dc.Tariffs.FirstOrDefault(a => a.ID == id);
+                var oldTariff = dc.Tariffs.FirstOrDefault(a => a.Id == id);
+                if (oldTariff != null)
+                    oldTariff.IsDeleted = true;
+
+                dc.SaveChanges();
+            }
+        }
+
+        public static void DeleteElectricityTariff(int id)
+        {
+            using (var dc = new DatabaseContext())
+            {
+                var oldTariff = dc.ElectricityTariffs.FirstOrDefault(a => a.Id == id);
                 if (oldTariff != null)
                     oldTariff.IsDeleted = true;
 
@@ -113,13 +125,22 @@ namespace PGK_Center.DAL
             using (var dc = new DatabaseContext())
                 return dc.Garages
                     .AsNoTracking()
-                    .Any(a => a.ID != garage.ID && a.Number == garage.Number);
+                    .Any(a => a.Id != garage.Id && a.Number == garage.Number);
         }
 
         public static List<Tariff> GetAllTariffs()
         {
             using (var dc = new DatabaseContext())
                 return dc.Tariffs
+                    .AsNoTracking()
+                    .Where(a => !a.IsDeleted)
+                    .ToList();
+        }
+
+        public static List<ElectricityTariff> GetAllElectricityTariffs()
+        {
+            using (var dc = new DatabaseContext())
+                return dc.ElectricityTariffs
                     .AsNoTracking()
                     .Where(a => !a.IsDeleted)
                     .ToList();
@@ -132,9 +153,27 @@ namespace PGK_Center.DAL
 
             using (var dc = new DatabaseContext())
             {
-                var oldTariff = dc.Tariffs.FirstOrDefault(a => a.ID == tariff.ID);
+                var oldTariff = dc.Tariffs.FirstOrDefault(a => a.Id == tariff.Id);
                 if (oldTariff == null)
                     dc.Tariffs.Add(tariff);
+                else
+                    tariff.CopyTo(oldTariff);
+
+                dc.SaveChanges();
+            }
+        }
+
+        public static void SaveElectricityTariff(ElectricityTariff tariff)
+        {
+            if (tariff == null)
+                return;
+
+            using (var dc = new DatabaseContext())
+            {
+                var oldTariff = dc.ElectricityTariffs
+                    .FirstOrDefault(a => a.Id == tariff.Id);
+                if (oldTariff == null)
+                    dc.ElectricityTariffs.Add(tariff);
                 else
                     tariff.CopyTo(oldTariff);
 

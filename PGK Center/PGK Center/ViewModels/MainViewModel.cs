@@ -24,6 +24,7 @@ namespace PGK_Center.ViewModels
         public ObservableCollection<Garage> Garages { get; set; }
         public ObservableCollection<Garage> GaragesToDisplay { get; set; }
         public ObservableCollection<Tariff> Tariffs { get; set; }
+        public ObservableCollection<ElectricityTariff> ElectricityTariffs { get; set; }
 
         private string _searchText;
         public string SearchText
@@ -38,6 +39,7 @@ namespace PGK_Center.ViewModels
 
         public Garage CurrentGarage { get; set; }
         public Tariff CurrentTariff { get; set; }
+        public ElectricityTariff CurrentElectricityTariff { get; set; }
 
         public ListSortDirection NumberSortDirection { get; set; }
 
@@ -79,6 +81,10 @@ namespace PGK_Center.ViewModels
         public RelayCommand PayCommand => _payCommand ??
             (_payCommand = new RelayCommand(o => Pays()));
 
+        private RelayCommand _electricityPayCommand;
+        public RelayCommand ElectricityPayCommand => _electricityPayCommand ??
+            (_electricityPayCommand = new RelayCommand(o => ElectricityPays()));
+
         private RelayCommand _reportCommand;
         public RelayCommand ReportCommand => _reportCommand ??
             (_reportCommand = new RelayCommand(o => Report()));
@@ -98,6 +104,18 @@ namespace PGK_Center.ViewModels
         private RelayCommand _deleteTariffCommand;
         public RelayCommand DeleteTariffCommand => _deleteTariffCommand ??
             (_deleteTariffCommand = new RelayCommand(o => DeleteTariff()));
+
+        private RelayCommand _addElectricityTariffCommand;
+        public RelayCommand AddElectricityTariffCommand => _addElectricityTariffCommand ??
+            (_addElectricityTariffCommand = new RelayCommand(o => AddElectricityTariff()));
+
+        private RelayCommand _editElectricityTariffCommand;
+        public RelayCommand EditElectricityTariffCommand => _editElectricityTariffCommand ??
+            (_editElectricityTariffCommand = new RelayCommand(o => EditElectricityTariff()));
+
+        private RelayCommand _deleteElectricityTariffCommand;
+        public RelayCommand DeleteElectricityTariffCommand => _deleteElectricityTariffCommand ??
+            (_deleteElectricityTariffCommand = new RelayCommand(o => DeleteElectricityTariff()));
         #endregion
 
         public MainViewModel(MainWindow view)
@@ -110,6 +128,7 @@ namespace PGK_Center.ViewModels
             GaragesToDisplay = Garages.ToObservableCollection();
             Garages.CollectionChanged += Garages_CollectionChanged;
             ShowTariffs();
+            ShowElectricityTariffs();
             CountStatistic();
         }
 
@@ -164,7 +183,7 @@ namespace PGK_Center.ViewModels
 
         private void ViewModel_GarageSaved(Garage obj)
         {
-            var garage = Garages.FirstOrDefault(a => a.ID == obj.ID);
+            var garage = Garages.FirstOrDefault(a => a.Id == obj.Id);
 
             if (garage != default)
                 Garages.Remove(garage);
@@ -192,12 +211,22 @@ namespace PGK_Center.ViewModels
                 string.Empty, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return;
 
-            DBManager.DeleteGarage(CurrentGarage.ID);
+            DBManager.DeleteGarage(CurrentGarage.Id);
             Garages.Remove(CurrentGarage);
             ShowGarages();
         }
 
         private void Pays()
+        {
+            if (CurrentGarage == null)
+                return;
+
+            var viewModel = new PaysViewModel(CurrentGarage);
+            viewModel.GarageSaved += ViewModel_GarageSaved;
+            viewModel.ShowView(_view);
+        }
+
+        private void ElectricityPays()
         {
             if (CurrentGarage == null)
                 return;
@@ -264,7 +293,6 @@ namespace PGK_Center.ViewModels
                 csv.AppendLine($"Нет информации о счётчике:\t{CountersNoInfo}");
                 csv.AppendLine();
                 csv.AppendLine($"Общая задолженность:\t{Total}");
-                //csv.AppendLine($"Задолженность за текущий квартал:\t{Garages.Sum(a => a.TotalOnCurrentQuarter)}");
                 csv.AppendLine($"Задолженность за текущий год:\t{TotalOnCurrentYear}");
                 csv.AppendLine($"Задолженность за предыдущие периоды:\t{TotalOnPreviousYears}");
 
@@ -283,7 +311,7 @@ namespace PGK_Center.ViewModels
 
         private void ViewModel_TariffSaved(Tariff obj)
         {
-            var tariff = CommonData.Tariffs.FirstOrDefault(a => a.ID == obj.ID);
+            var tariff = CommonData.Tariffs.FirstOrDefault(a => a.Id == obj.Id);
 
             if (tariff != default)
                 CommonData.Tariffs.Remove(tariff);
@@ -320,10 +348,67 @@ namespace PGK_Center.ViewModels
                 string.Empty, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
                 return;
 
-            DBManager.DeleteTariff(CurrentTariff.ID);
+            DBManager.DeleteTariff(CurrentTariff.Id);
             CommonData.Tariffs.Remove(CurrentTariff);
 
             ShowTariffs();
+            ShowGarages();
+        }
+        #endregion
+
+        #region ElectricityTariff
+        private void AddElectricityTariff()
+        {
+            var viewModel = new ElectricityTariffViewModel(new ElectricityTariff());
+            viewModel.ElectricityTariffSaved += ViewModel_ElectricityTariffSaved;
+            viewModel.ShowView(_view);
+        }
+
+        private void ViewModel_ElectricityTariffSaved(ElectricityTariff obj)
+        {
+            var tariff = CommonData.ElectricityTariffs
+                .FirstOrDefault(a => a.Id == obj.Id);
+
+            if (tariff != default)
+                CommonData.ElectricityTariffs.Remove(tariff);
+
+            CommonData.ElectricityTariffs.Add(obj);
+
+            ShowElectricityTariffs();
+            ShowGarages();
+        }
+
+        public void ShowElectricityTariffs()
+        {
+            ElectricityTariffs = CommonData.ElectricityTariffs
+                .OrderByDescending(a => a.Start)
+                .ToObservableCollection();
+        }
+
+        private void EditElectricityTariff()
+        {
+            if (CurrentElectricityTariff == null)
+                return;
+
+            var viewModel = new ElectricityTariffViewModel(
+                (ElectricityTariff)CurrentElectricityTariff.Clone());
+            viewModel.ElectricityTariffSaved += ViewModel_ElectricityTariffSaved;
+            viewModel.ShowView(_view);
+        }
+
+        private void DeleteElectricityTariff()
+        {
+            if (CurrentElectricityTariff == null)
+                return;
+
+            if (MessageBox.Show($"Вы действительно хотите удалить тариф за электричество с {CurrentElectricityTariff.Start} по {CurrentElectricityTariff.End}?",
+                string.Empty, MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return;
+
+            DBManager.DeleteElectricityTariff(CurrentElectricityTariff.Id);
+            CommonData.ElectricityTariffs.Remove(CurrentElectricityTariff);
+
+            ShowElectricityTariffs();
             ShowGarages();
         }
         #endregion

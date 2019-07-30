@@ -93,9 +93,9 @@ namespace PGK_Center.ViewModels
             DBManager.SaveGarage(Garage);
 
             foreach (var phone in Phones)
-                phone.GarageID = Garage.ID;
+                phone.GarageID = Garage.Id;
 
-            DBManager.SaveGaragePhones(Garage.ID, Phones);
+            DBManager.SaveGaragePhones(Garage.Id, Phones);
             Garage.Phones = Phones.ToList();
 
             GarageSaved?.Invoke(Garage);

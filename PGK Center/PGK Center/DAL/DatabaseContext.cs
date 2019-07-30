@@ -15,5 +15,7 @@ namespace PGK_Center.DAL
         public DbSet<Phone> Phones { get; set; }
 
         public DbSet<Tariff> Tariffs { get; set; }
+
+        public DbSet<ElectricityTariff> ElectricityTariffs { get; set; }
     }
 }

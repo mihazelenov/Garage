@@ -1,38 +1,28 @@
 ﻿using PGK_Center.BLL;
 using System;
 using System.Collections.Generic;
-using System.Data.Linq.Mapping;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 
 namespace PGK_Center.ObjectModel
 {
-    [Table]
     public class Garage : ICloneable
     {
-        [Column(IsDbGenerated = true, IsPrimaryKey = true)]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
-        [Column]
         public string Number { get; set; }
 
-        [Column]
         public string Name { get; set; }
 
-        [Column]
         public string Comment { get; set; }
 
-        [Column]
         public string Address { get; set; }
 
-        [Column]
         public decimal Square { get; set; }
 
-        [Column]
         public bool? CounterState { get; set; }
 
-        [Column]
         public bool IsDeleted { get; set; }
 
         public GarageNumber GarageNumber => new GarageNumber(Number);
