@@ -32,6 +32,7 @@
         <TextBox VerticalAlignment="Top" HorizontalAlignment="Stretch"
                  Margin="10,167,10.2,0" Grid.ColumnSpan="2"
                  Text="{Binding Garage.Comment}" Height="100"
+                 VerticalScrollBarVisibility="Auto"
                  TextWrapping="Wrap"/>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top"
                Content="Адрес" Margin="10,272,0,0"/>

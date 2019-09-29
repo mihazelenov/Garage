@@ -137,7 +137,7 @@ namespace PGK_Center.ObjectModel
             get
             {
                 if (IsPreviousYearsDebtor || IsCurrentYearDebtor)
-                    return Brushes.IndianRed;
+                    return Brushes.Pink;
 
                 if (_isQuarterDebtor)
                     return Brushes.Yellow;

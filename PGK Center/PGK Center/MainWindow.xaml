@@ -47,20 +47,38 @@
                         </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="№" Binding="{Binding GarageNumber}" SortDirection="{Binding NumberSortDirection, Mode=TwoWay}"/>
-                            <DataGridTextColumn Header="ФИО" Binding="{Binding Name}">
+                            <DataGridTextColumn Header="ФИО"
+                                                Binding="{Binding Name}"
+                                                Width="300">
                                 <DataGridTextColumn.CellStyle>
                                     <Style TargetType="DataGridCell">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </Trigger>
+                                        </Style.Triggers>
                                         <Setter Property="Background" Value="{Binding Background}"/>
                                     </Style>
                                 </DataGridTextColumn.CellStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Комментарий" Binding="{Binding Comment}"/>
-                            <DataGridTextColumn Header="Адрес" Binding="{Binding Address}"/>
+                            <DataGridTextColumn Header="Комментарий"
+                                                Width="300"
+                                                Binding="{Binding Comment}"/>
+                            <DataGridTextColumn Header="Адрес"
+                                                Width="300"
+                                                Binding="{Binding Address}"/>
                             <DataGridTextColumn Header="Счётчик" Binding="{Binding CounterStateToDisplay}"/>
                             <DataGridTextColumn Header="Начислено" Binding="{Binding ToPay}"/>
                             <DataGridTextColumn Header="Текущая сумма" Binding="{Binding Total}">
                                 <DataGridTextColumn.CellStyle>
                                     <Style TargetType="DataGridCell">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </Trigger>
+                                        </Style.Triggers>
                                         <Setter Property="Background" Value="{Binding Background}"/>
                                     </Style>
                                 </DataGridTextColumn.CellStyle>
@@ -86,6 +104,16 @@
                                 </MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}" >
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
                     </DataGrid>
                 </Grid>
             </TabItem>
